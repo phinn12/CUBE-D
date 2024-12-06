@@ -67,5 +67,5 @@ void	freedouble(char **array);
 int		ft_strcmp(const char *s1, const char *s2);
 char	**read_lines_from_file(int fd);
 bool    check_row_edges(char **map, int row);
-char *ft_strreplace(char *str, char old_char, char new_char);
+int     is_positive_number(const char *str);
 #endif
