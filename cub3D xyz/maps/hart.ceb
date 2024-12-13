@@ -8,7 +8,7 @@ SO                                   ./textures/floor.xpm
 EA                                                         ./textures/coin.xpm
 
 
-F    213 , 45 , 60 
+F                                        220 , 100 , 213,123
 C    225,                  123,                                                         112
 
 

@@ -6,6 +6,11 @@ int main(int argc, char **argv) {
         printf("Kullanım: %s <harita_dosyası>\n", argv[0]);
         return 1;
     }
+    int len = ft_strlen(argv[1]);
+    if (len < 4 || ft_strncmp(argv[1] + len - 4, ".cub", 4) != 0) {
+        printf("HATA: Harita dosyasının uzantısı .cub olmalı!\n");
+        return 1;
+    }
     
     int fd = open(argv[1], O_RDONLY);
     if (fd < 0) {

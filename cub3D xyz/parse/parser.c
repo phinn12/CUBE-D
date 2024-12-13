@@ -29,14 +29,10 @@ int parse_and_validate_variables(char **lines, t_map_info *map_info)
     int i = 0;
     int texture_or_color_checked = 0;
     int line_count = 0;
-
-    map_info->fclor = malloc(sizeof(int) * 3);
-    map_info->cclor = malloc(sizeof(int) * 3);
-    if (!map_info->fclor || !map_info->cclor)
-    {
-        printf("Hata: Bellek tahsisi başarısız oldu!\n");
-        return (-1);
-    }
+    
+    map_info->fclor = malloc(sizeof(int) *3);
+    map_info->cclor = malloc(sizeof(int) *3);
+    //if (malloc)
 
     while (lines[i])
     {
@@ -45,75 +41,38 @@ int parse_and_validate_variables(char **lines, t_map_info *map_info)
             i++;
             continue;
         }
-
         if ((lines[i][0] == 'N' || lines[i][0] == 'S' || lines[i][0] == 'W' || lines[i][0] == 'E') && line_count < 6)
         {
             tokens = ft_split(lines[i], ' ');
-            set_texture_or_color(tokens, map_info);
-            freedouble(tokens); // Bellek sızıntısını önlemek için
+            set_texture_or_color(tokens,map_info);
             texture_or_color_checked = 1;
         }
-
         if (lines[i][0] == 'F' || lines[i][0] == 'C')
         {
-            char **rgb_values = ft_split(lines[i] + 1, ',');
-            int j = 0;
-
-            while (rgb_values[j])
-            {
-                char *trimmed_value = ft_strtrim(rgb_values[j], " ");
-                if (!trimmed_value || !is_positive_number(trimmed_value))
-                {
-                    printf("Hata: Renk değeri pozitif bir sayı değil: %s\n", trimmed_value);
-                    free(trimmed_value);
-                    freedouble(rgb_values);
-                    return (-1);
-                }
-
-                int value = check_rgb_values(trimmed_value);
-                if (value == -1)
-                {
-                    printf("Hata: Renk değeri 0-255 aralığında değil: %s\n", trimmed_value);
-                    free(trimmed_value);
-                    freedouble(rgb_values);
-                    return (-1);
-                }
-
-                if (lines[i][0] == 'F')
-                    map_info->fclor[j] = value;
-                else if (lines[i][0] == 'C')
-                    map_info->cclor[j] = value;
-
-                free(trimmed_value);
-                j++;
-            }
-
-            if (j != 3)
-            {
-                printf("Hata: Renk değerleri eksik veya fazla!\n");
-                freedouble(rgb_values);
-                return (-1);
-            }
-
-            freedouble(rgb_values);
+            char **rgb_values = ft_split(lines[i]+1, ',');
+            //if (rgb_values[]) is digit kontrol et
+            if (lines[i][0] == 'F')
+                for (int j = 0; rgb_values[j]; j++)
+                    map_info->fclor[j]= check_rgb_values(ft_strtrim(rgb_values[j], " "));
+            if (lines[i][0] == 'C')
+                for (int j = 0; rgb_values[j]; j++)
+                    map_info->cclor[j]= check_rgb_values(ft_strtrim(rgb_values[j], " "));
+            // if (j!=3)
+            //     return(-1);
         }
         else if (lines[i][0] == '1' || lines[i][0] == '0')
         {
-            if (!texture_or_color_checked)
-            {
+            if (!texture_or_color_checked) {
                 printf("Hata: Harita başlamadan önce texture/renk bilgisi eksik!\n");
                 return (-1);
             }
         }
-
         line_count++;
-        if (line_count >= 6)
-        {
+        if (line_count >= 6) {
             texture_or_color_checked = 1;
         }
         i++;
     }
-
     return check_map_textures_and_colors(map_info);
 }
 
@@ -209,19 +168,3 @@ char **read_lines_from_file(int fd)
     return lines;
 }
 
-int is_positive_number(const char *str)
-{
-    int i = 0;
-
-    if (!str || *str == '\0')
-        return 0;
-    if (str[0] == '-')
-        return 0;
-    while (str[i])
-    {
-        if (!ft_atoi(str))
-            return 0;
-        i++;
-    }
-    return 1;
-}
